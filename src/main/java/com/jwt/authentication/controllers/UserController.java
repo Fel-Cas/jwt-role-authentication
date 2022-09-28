@@ -49,10 +49,14 @@ public class UserController {
        return  ResponseEntity.ok(this.userService.findById(id));
     }
 
-    protected  boolean isAdmin(User user){
-       List<Role>roles= (List<Role>) user.getRoles().stream().filter(role->role.getName()=="ADMIN").collect(Collectors.toList());
-       return roles.size()==1;
-   }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public  ResponseEntity<Void> delete(@PathVariable Long id){
+        this.userService.delete(id);
+       return ResponseEntity.noContent().build();
+    }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/hello-admin")
     public String adminPing(){
@@ -70,4 +74,11 @@ public class UserController {
     public String userPing(){
         return "Any User Can Read This";
     }
+
+    protected  boolean isAdmin(User user){
+        List<Role>roles= (List<Role>) user.getRoles().stream().filter(role->role.getName()=="ADMIN").collect(Collectors.toList());
+        return roles.size()==1;
+    }
+
+
 }

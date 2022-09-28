@@ -67,4 +67,10 @@ public class UserServiceImp implements UserService {
         return userRepository.save(nUser);
     }
 
+    @Override
+    public void delete(Long id) throws NotFoundException {
+        User user= findById(id);
+        this.userRepository.delete(user);
+    }
+
 }
