@@ -56,6 +56,13 @@ public class UserController {
        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PutMapping ("/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDto userDto){
+        User currentuser=this.currentUser.getCurrentUser();
+        if(currentuser.getId()!=id && !isAdmin(currentuser)) throw new ForbiddenException("You can't view this user");
+        return  ResponseEntity.ok(this.userService.update(id,userDto));
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/hello-admin")

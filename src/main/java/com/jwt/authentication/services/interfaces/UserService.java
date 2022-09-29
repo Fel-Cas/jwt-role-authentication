@@ -13,4 +13,5 @@ public interface UserService {
     User findOne(String username);
     User findById(Long id) throws NotFoundException;
     void delete(Long id) throws NotFoundException;
+    User update(Long id, UserDto userDto) throws NotFoundException;
 }

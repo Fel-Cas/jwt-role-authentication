@@ -73,4 +73,18 @@ public class UserServiceImp implements UserService {
         this.userRepository.delete(user);
     }
 
+    @Override
+    public User update(Long id, UserDto userDto) throws NotFoundException {
+        User userFound=findById(id);
+        User userUpdated=updateUser(userFound,userDto);
+        return this.userRepository.save(userUpdated);
+    }
+
+    public User updateUser(User user, UserDto userDto){
+        user.setName(userDto.getName());
+        user.setBusinessTitle(userDto.getBusinessTitle());
+        user.setPhone(userDto.getPhone());
+        return user;
+    }
+
 }
