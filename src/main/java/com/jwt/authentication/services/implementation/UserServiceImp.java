@@ -1,5 +1,6 @@
 package com.jwt.authentication.services.implementation;
 
+import com.jwt.authentication.dto.PasswordDTO;
 import com.jwt.authentication.dto.UserDto;
 import com.jwt.authentication.entities.Role;
 import com.jwt.authentication.entities.User;
@@ -65,6 +66,33 @@ public class UserServiceImp implements UserService {
 
         nUser.setRoles(roleSet);
         return userRepository.save(nUser);
+    }
+
+    @Override
+    public void delete(Long id) throws NotFoundException {
+        User user= findById(id);
+        this.userRepository.delete(user);
+    }
+
+    @Override
+    public User update(Long id, UserDto userDto) throws NotFoundException {
+        User userFound=findById(id);
+        User userUpdated=updateUser(userFound,userDto);
+        return this.userRepository.save(userUpdated);
+    }
+
+    @Override
+    public void updatePassword(Long id, PasswordDTO passwordDTO) {
+        User userFound=findById(id);
+        userFound.setPassword(bcryptEncoder.encode(passwordDTO.getPassword()));
+        this.userRepository.save(userFound);
+    }
+
+    public User updateUser(User user, UserDto userDto){
+        user.setName(userDto.getName());
+        user.setBusinessTitle(userDto.getBusinessTitle());
+        user.setPhone(userDto.getPhone());
+        return user;
     }
 
 }
