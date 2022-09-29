@@ -4,6 +4,7 @@ import com.jwt.authentication.config.JwtAuthenticationFilter;
 import com.jwt.authentication.config.TokenProvider;
 import com.jwt.authentication.dto.AuthToken;
 import com.jwt.authentication.dto.LoginUser;
+import com.jwt.authentication.dto.PasswordDTO;
 import com.jwt.authentication.dto.UserDto;
 import com.jwt.authentication.entities.Role;
 import com.jwt.authentication.entities.User;
@@ -64,6 +65,14 @@ public class UserController {
         return  ResponseEntity.ok(this.userService.update(id,userDto));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PutMapping ("/password/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody PasswordDTO passwordDTO){
+        User currentuser=this.currentUser.getCurrentUser();
+        if(currentuser.getId()!=id) throw new ForbiddenException("You can't update user's password");
+        this.userService.updatePassword(id,passwordDTO);
+        return ResponseEntity.noContent().build();
+    }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/hello-admin")
     public String adminPing(){

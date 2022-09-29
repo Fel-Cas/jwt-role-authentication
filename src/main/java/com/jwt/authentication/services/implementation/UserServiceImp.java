@@ -1,5 +1,6 @@
 package com.jwt.authentication.services.implementation;
 
+import com.jwt.authentication.dto.PasswordDTO;
 import com.jwt.authentication.dto.UserDto;
 import com.jwt.authentication.entities.Role;
 import com.jwt.authentication.entities.User;
@@ -78,6 +79,13 @@ public class UserServiceImp implements UserService {
         User userFound=findById(id);
         User userUpdated=updateUser(userFound,userDto);
         return this.userRepository.save(userUpdated);
+    }
+
+    @Override
+    public void updatePassword(Long id, PasswordDTO passwordDTO) {
+        User userFound=findById(id);
+        userFound.setPassword(bcryptEncoder.encode(passwordDTO.getPassword()));
+        this.userRepository.save(userFound);
     }
 
     public User updateUser(User user, UserDto userDto){
